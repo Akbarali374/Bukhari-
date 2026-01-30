@@ -1,3 +1,4 @@
+
 {
   "name": "bukhari-academy",
   "version": "1.0.0",
@@ -10,6 +11,13 @@
     "build": "cd client && npm run build",
     "start": "cd server && npm start",
     "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "serverless-http": "^3.2.0",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
