@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function getToken() {
   return localStorage.getItem('token');
@@ -13,7 +13,7 @@ export async function api(url, options = {}) {
   };
   let res;
   try {
-    res = await fetch(`${API_BASE}${url}`, { ...options, headers });
+    res = await fetch(`${API_BASE}/api${url}`, { ...options, headers });
   } catch (e) {
     throw new Error('Serverga ulanish imkonsiz. Serverni ishga tushiring (npm run server yoki npm run dev).');
   }
