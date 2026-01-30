@@ -4,10 +4,8 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Express app yaratish
 const app = express();
 
-// CORS sozlamalari
 app.use(cors({
   origin: true,
   credentials: true
@@ -15,7 +13,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// In-memory database (Netlify uchun)
+// In-memory database
 let users = [
   {
     id: 1,
@@ -30,23 +28,16 @@ let users = [
 let teachers = [];
 let groups = [];
 let students = [];
-let grades = [];
-let bonuses = [];
 let news = [];
 
-// Auto-increment IDs
 let nextUserId = 2;
 let nextTeacherId = 1;
 let nextGroupId = 1;
 let nextStudentId = 1;
-let nextGradeId = 1;
-let nextBonusId = 1;
 let nextNewsId = 1;
 
-// JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'bukhari-academy-secret-key';
 
-// Auth middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -69,8 +60,7 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'Bukhari Academy API is running on Netlify',
-    timestamp: new Date().toISOString(),
-    environment: 'netlify-functions'
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -99,26 +89,10 @@ app.post('/api/auth/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    let extra = {};
-    if (user.role === 'teacher') {
-      const teacher = teachers.find(t => t.user_id === user.id);
-      if (teacher) extra.teacherId = teacher.id;
-    }
-    if (user.role === 'student') {
-      const student = students.find(s => s.user_id === user.id);
-      if (student) {
-        const group = groups.find(g => g.id === student.group_id);
-        extra.student = {
-          ...student,
-          group_name: group ? group.name : 'Noma\'lum'
-        };
-      }
-    }
-
     const { password: _, ...safeUser } = user;
     res.json({
       token,
-      user: { ...safeUser, ...extra }
+      user: safeUser
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -132,26 +106,8 @@ app.get('/api/auth/me', authenticateToken, (req, res) => {
     return res.status(404).json({ error: 'Foydalanuvchi topilmadi' });
   }
 
-  let extra = {};
-  if (user.role === 'teacher') {
-    const teacher = teachers.find(t => t.user_id === user.id);
-    if (teacher) extra.teacherId = teacher.id;
-  }
-  if (user.role === 'student') {
-    const student = students.find(s => s.user_id === user.id);
-    if (student) {
-      const group = groups.find(g => g.id === student.group_id);
-      extra.student = {
-        ...student,
-        group_name: group ? group.name : 'Noma\'lum'
-      };
-    }
-  }
-
   const { password: _, ...safeUser } = user;
-  res.json({
-    user: { ...safeUser, ...extra }
-  });
+  res.json({ user: safeUser });
 });
 
 // Admin routes
@@ -207,7 +163,6 @@ app.post('/api/admin/teachers', authenticateToken, async (req, res) => {
 
     res.json({ message: 'Ustoz muvaffaqiyatli yaratildi' });
   } catch (error) {
-    console.error('Create teacher error:', error);
     res.status(500).json({ error: 'Server xatosi' });
   }
 });
@@ -302,7 +257,6 @@ app.post('/api/admin/students', authenticateToken, async (req, res) => {
 
     res.json({ message: 'O\'quvchi muvaffaqiyatli yaratildi' });
   } catch (error) {
-    console.error('Create student error:', error);
     res.status(500).json({ error: 'Server xatosi' });
   }
 });
@@ -321,10 +275,7 @@ app.get('/api/admin/logins', authenticateToken, (req, res) => {
         group_name = group ? group.name : null;
       }
     }
-    return {
-      ...user,
-      group_name
-    };
+    return { ...user, group_name };
   });
 
   res.json(loginData);
@@ -369,6 +320,4 @@ app.delete('/api/admin/news/:id', authenticateToken, (req, res) => {
   res.json({ message: 'Yangilik o\'chirildi' });
 });
 
-// Export handler
 module.exports.handler = serverless(app);
-
