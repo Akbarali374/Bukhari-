@@ -175,7 +175,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-left text-slate-600">
+                  <tr className="border-b border-slate-200 dark:border-slate-600 text-left text-slate-600 dark:text-slate-400">
                     <th className="py-3 px-2">Familya, Ism</th>
                     <th className="py-3 px-2">Gmail</th>
                     <th className="py-3 px-2">Guruh</th>
@@ -184,11 +184,17 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {(filterGroup ? students.filter((s) => s.group_id === parseInt(filterGroup, 10)) : students).map((s) => (
-                    <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
-                      <td className="py-3 px-2 font-medium">{s.familya} {s.ism}</td>
-                      <td className="py-3 px-2">{s.gmail}</td>
-                      <td className="py-3 px-2">{s.group_name}</td>
-                      <td className="py-3 px-2">{s.login_email}</td>
+                    <tr key={s.id} className="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                      <td className="py-3 px-2 font-medium text-slate-800 dark:text-slate-200 break-words min-w-0">
+                        <div className="whitespace-normal break-words">{s.familya} {s.ism}</div>
+                      </td>
+                      <td className="py-3 px-2 text-slate-600 dark:text-slate-400 break-all min-w-0">
+                        <div className="whitespace-normal break-all">{s.gmail}</div>
+                      </td>
+                      <td className="py-3 px-2 text-slate-600 dark:text-slate-400">{s.group_name}</td>
+                      <td className="py-3 px-2 text-slate-600 dark:text-slate-400 break-all min-w-0">
+                        <div className="whitespace-normal break-all">{s.login_email}</div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -259,7 +265,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-left text-slate-600">
+                  <tr className="border-b border-slate-200 dark:border-slate-600 text-left text-slate-600 dark:text-slate-400">
                     <th className="py-3 px-2">Rol</th>
                     <th className="py-3 px-2">Login (email)</th>
                     <th className="py-3 px-2">Ism</th>
@@ -268,17 +274,21 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {logins.map((u) => (
-                    <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <tr key={u.id} className="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50">
                       <td className="py-3 px-2">
                         <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          u.role === 'teacher' ? 'bg-primary-100 text-primary-800' : 'bg-amber-100 text-amber-800'
+                          u.role === 'teacher' ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
                         }`}>
                           {u.role === 'teacher' ? 'Ustoz' : 'O\'quvchi'}
                         </span>
                       </td>
-                      <td className="py-3 px-2 font-mono">{u.email}</td>
-                      <td className="py-3 px-2">{u.first_name} {u.last_name}</td>
-                      <td className="py-3 px-2 hidden sm:table-cell">{u.group_name || '—'}</td>
+                      <td className="py-3 px-2 font-mono text-slate-600 dark:text-slate-400 break-all min-w-0">
+                        <div className="whitespace-normal break-all">{u.email}</div>
+                      </td>
+                      <td className="py-3 px-2 text-slate-800 dark:text-slate-200 break-words min-w-0">
+                        <div className="whitespace-normal break-words">{u.first_name} {u.last_name}</div>
+                      </td>
+                      <td className="py-3 px-2 hidden sm:table-cell text-slate-600 dark:text-slate-400">{u.group_name || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
